@@ -65,14 +65,14 @@ ok( !$@, 'Opening OK' );
 $response = eval { $mailer->open_file() };
 is(
     $@,
-    "Required file with emails! at lib/Mailer.pm line 44.\n",
+    "Required file with emails! at lib/Mailer.pm line 41.\n",
     'Opening NOT OK'
 );
 
 $response = eval { $mailer->open_file('sksfs/fs/fs/f/s') };
 is(
     $@,
-    "No such file or directory at lib/Mailer.pm line 45.\n",
+    "No such file or directory at lib/Mailer.pm line 42.\n",
     'Opening NOT OK'
 );
 
@@ -80,3 +80,29 @@ note 'Action test get_domain()';
 
 $response = $mailer->get_domain($fh);
 is( $response, 'mail.ru', 'Get domain OK');
+close $fh;
+
+note 'Action test get_domains_hash()';
+
+$fh = $mailer->open_file('./t/mails.txt');
+my %domains = $mailer->get_domains_hash($fh);
+is( $domains{'rambler.ru'}, 1, 'Get domains HASH OK');
+
+note 'Action test sort_hash_keys()';
+
+my @keys = $mailer->sort_hash_keys(%domains);
+is( $keys[0], 'INVALID', 'Sort hash keys OK' );
+is( $keys[1], 'mail.ru', 'Sort hash keys OK' );
+
+note 'Action test format_stat()';
+
+my $text = <<END;
+             INVALID          3
+             mail.ru          2
+ xn--c1ad6a.xn--p1ai          1
+              vk.com          1
+          rambler.ru          1
+END
+
+$response = $mailer->format_stat(%domains);
+is( $response, $text, 'format_stat OK' );
