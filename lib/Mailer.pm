@@ -30,7 +30,7 @@ sub domain {
 
 sub run {
     my ( $self, $filepath ) = @_;
-    my $fh = $self->open_file($filepath);
+    my $fh      = $self->open_file($filepath);
     my %domains = $self->get_domains_hash($fh);
     close $fh;
     print $self->format_stat(%domains);
@@ -87,9 +87,8 @@ Mailer - module for checking email.
 
 =head1 SYNOPSIS
 
-  my $mailer = Mailer->new();
-  
-  print 'Email is VALID!' if $mailer->email_check($address);
+    my $mailer = Mailer->new();
+    $mailer->run('data.txt');
 
 =head1 DESCRIPTION
 
@@ -99,17 +98,64 @@ Just test.
 
 =head2 new
 
-  my $object = Mailer->new();
+    my $object = Mailer->new();
 
 The C<new> constructor lets you create a new B<Mailer> object.
 
 =head2 email_check
 
+    say 'good' if $mailer->email_check('vasya@gmail.com');
+
 This method check email with Email::Valid.
 
 =head2 domain
 
+    my $domain = $mailer->domain('cool@nasa.gov');
+
 This method returns domain of email.
+
+=head2 run
+
+    $mailer->run('mails.txt');
+    
+This method get a path to file with emails and returns domaind with count data.
+
+=head2 open_file
+
+    my $fh = $mailer->open_file($filepath);
+
+Returns the filehandler. Gets path to the file.
+
+=head2 get_domain
+
+    $response = $mailer->get_domain($fh);
+
+Gets the filehandler and returns domain of email address in file.
+
+=head2 get_domains_hash
+
+    my %domains = $mailer->get_domains_hash($fh);
+
+Gets the filehandler and returns a hash with domains as a keys and sum as
+a values.
+
+=head2 sort_hash_keys
+
+    my @keys = $mailer->sort_hash_keys(%domains);
+
+Returns sorted keys array of inputed domains hash.
+
+=head2 format_stat
+
+    $response = $mailer->format_stat(%domains);
+
+Gets a hash with domains and sum. Returns formatted text. Such as:
+
+                INVALID          3
+                mail.ru          2
+    xn--c1ad6a.xn--p1ai          1
+                 vk.com          1
+             rambler.ru          1
 
 =head1 SUPPORT
 
