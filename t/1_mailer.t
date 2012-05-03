@@ -63,18 +63,10 @@ my $fh = eval { $mailer->open_file('./t/mails.txt') };
 ok( !$@, 'Opening OK' );
 
 $response = eval { $mailer->open_file() };
-is(
-    $@,
-    "Required file with emails! at lib/Mailer.pm line 41.\n",
-    'Opening NOT OK'
-);
+ok( $@, 'Opening NOT OK' );
 
 $response = eval { $mailer->open_file('sksfs/fs/fs/f/s') };
-is(
-    $@,
-    "No such file or directory at lib/Mailer.pm line 42.\n",
-    'Opening NOT OK'
-);
+ok( $@, 'Opening NOT OK' );
 
 note 'Action test get_domain()';
 
@@ -86,6 +78,7 @@ note 'Action test get_domains_hash()';
 
 $fh = $mailer->open_file('./t/mails.txt');
 my %domains = $mailer->get_domains_hash($fh);
+close $fh;
 is( $domains{'rambler.ru'}, 1, 'Get domains HASH OK');
 
 note 'Action test sort_hash_keys()';
@@ -106,3 +99,7 @@ END
 
 $response = $mailer->format_stat(%domains);
 is( $response, $text, 'format_stat OK' );
+
+note 'Action test run()';
+$response = $mailer->run('./t/mails.txt');
+is( $response, 'OK', 'Run method works OK' );

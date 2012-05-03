@@ -34,6 +34,7 @@ sub run {
     my %domains = $self->get_domains_hash($fh);
     close $fh;
     print $self->format_stat(%domains);
+    return 'OK';
 }
 
 sub open_file {
