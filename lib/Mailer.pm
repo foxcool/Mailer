@@ -21,8 +21,11 @@ sub email_check {
 
 sub domain {
     my ($self, $email) = @_;
-    $email =~ s/.*@//;
-    return $email;
+    if ( $self->email_check($email) ) {
+        $email =~ s/.*@//;
+        return $email;
+    }
+    else { return 'INVALID'; }
 }
 
 1;
@@ -33,38 +36,33 @@ __END__
 
 =head1 NAME
 
-Mailer - My author was too lazy to write an abstract
+Mailer - module for checking email.
 
 =head1 SYNOPSIS
 
-  my $object = Mailer->new(
-      foo  => 'bar',
-      flag => 1,
-  );
+  my $mailer = Mailer->new();
   
-  $object->dummy;
+  print 'Email is VALID!' if $mailer->email_check($address);
 
 =head1 DESCRIPTION
 
-The author was too lazy to write a description.
+Just test.
 
 =head1 METHODS
 
 =head2 new
 
-  my $object = Mailer->new(
-      foo => 'bar',
-  );
+  my $object = Mailer->new();
 
 The C<new> constructor lets you create a new B<Mailer> object.
 
-So no big surprises there...
+=head2 email_check
 
-Returns a new B<Mailer> or dies on error.
+This method check email with Email::Valid.
 
-=head2 dummy
+=head2 domain
 
-This method does something... apparently.
+This method returns domain of email.
 
 =head1 SUPPORT
 
@@ -72,6 +70,6 @@ No support is available
 
 =head1 AUTHOR
 
-Copyright 2012 Anonymous.
+Copyright 2012 Alexander Babenko.
 
 =cut
