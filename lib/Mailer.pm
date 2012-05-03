@@ -28,6 +28,45 @@ sub domain {
     else { return 'INVALID'; }
 }
 
+sub run {
+    my ($self, $filepath) = @_;
+    my $fh = $self->open_file($filepath);
+    my %domains;
+    while ( my $domain = $self->get_domain($fh) ) {
+        $domains{$domain}++;
+    };
+    close $fh;
+    print $self->format_stat(%domains);
+    }
+
+sub open_file {
+    my ($self, $filepath) = @_;
+    open my $fh, '<', $filepath or die($!);
+    return $fh;
+}
+
+sub get_domain {
+    my ($self, $fh) = @_;
+    my $email = <$fh>;
+    if ($email) {
+        chomp $email;
+        return $self->domain($email);
+    }
+}
+
+sub sort_hash_keys {
+    my ($self, %domains) = @_;
+    return sort { $domains{$b} <=> $domains{$a} } keys %domains if wantarray;
+}
+
+sub format_stat {
+    my ($self, %domains) = @_;
+    my @keys = $self->sort_hash_keys(%domains);
+    my $result;
+    $result .= sprintf ( "%20s %10s\n", $_, $domains{$_} ) for @keys;
+    return $result;
+}
+
 1;
 
 __END__

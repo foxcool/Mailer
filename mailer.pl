@@ -8,14 +8,5 @@ use lib './lib';
 use Mailer;
 
 my $mailer = Mailer->new();
-my %domains;
-
-while (<>) {
-    chomp;
-    $domains{$mailer->domain($_)}++;
-}
-
-my @sorted_keys = sort { $domains{$b} <=> $domains{$a} } keys %domains;
-foreach (@sorted_keys) {
-    say sprintf ( "%20s %10s", $_, $domains{$_} );
-}
+my $filepath = shift;
+$mailer->run($filepath);
