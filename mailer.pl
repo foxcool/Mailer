@@ -7,6 +7,6 @@ use lib './lib';
 
 use Mailer;
 
-my $mailer = Mailer->new();
+my $mailer   = Mailer->new();
 my $filepath = shift;
 $mailer->run($filepath);
