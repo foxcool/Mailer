@@ -1,3 +1,5 @@
+package Mailer;
+
 use 5.010;
 use strict;
 use warnings;
@@ -8,8 +10,8 @@ our $VERSION = '0.01';
 
 sub new {
     my $class = shift;
-    my $self = bless {@_}, $class;
-    return $self;
+    my $self  = {@_};
+    bless $self, $class;
 }
 
 sub email_check {
@@ -19,7 +21,8 @@ sub email_check {
 
 sub domain {
     my ($self, $email) = @_;
-    return $email =~ s/.*@//;
+    $email =~ s/.*@//;
+    return $email;
 }
 
 1;

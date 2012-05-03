@@ -4,5 +4,5 @@ ddd@rambler.ru
 roxette@mail.ru
 sdfsdf@@@@@rdfdf
 example@localhost
-иван@иванов.рф
+\x{0438}\x{0432}\x{0430}\x{043d}@\x{0438}\x{0432}\x{0430}\x{043d}\x{043e}\x{0432}.\x{0440}\x{0444}
 ivan@xn--c1ad6a.xn--p1ai
