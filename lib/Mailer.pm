@@ -37,10 +37,11 @@ sub run {
     };
     close $fh;
     print $self->format_stat(%domains);
-    }
+}
 
 sub open_file {
     my ($self, $filepath) = @_;
+    die('Required file with emails!') unless $filepath;  
     open my $fh, '<', $filepath or die($!);
     return $fh;
 }
