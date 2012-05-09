@@ -120,9 +120,10 @@ The C<new> constructor lets you create a new B<Mailer> object.
 
 This method check email with Email::Valid.
 
-=head2 domain
+=head2 split_domain
 
-    my $domain = $mailer->domain('cool@nasa.gov');
+    my $domain = $mailer->split_domain('cool@nasa.gov');
+    # $domain contain 'nasa.gov'
 
 This method returns domain of email.
 
@@ -151,27 +152,21 @@ Gets the filehandler and returns domain of email address in file.
 Gets the filehandler and returns a hash with domains as a keys and sum as
 a values.
 
-=head2 sort_hash_keys
-
-    my @keys = $mailer->sort_hash_keys(%domains);
-
-Returns sorted keys array of inputed domains hash.
-
 =head2 format_stat
 
     $response = $mailer->format_stat(%domains);
 
 Gets a hash with domains and sum. Returns formatted text. Such as:
 
-                INVALID          3
-                mail.ru          2
-    xn--c1ad6a.xn--p1ai          1
-                 vk.com          1
-             rambler.ru          1
+    INVALID 3
+    mail.ru 2
+    xn--c1ad6a.xn--p1ai 1
+    vk.com  1
+    rambler.ru  1
 
 =head1 SUPPORT
 
-No support is available
+    foxcool@cpan.org - email
 
 =head1 AUTHOR
 
