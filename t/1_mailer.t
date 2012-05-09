@@ -4,7 +4,7 @@ use 5.010;
 use strict;
 use warnings;
 use lib 'lib';
-use Test::More 'no_plan';
+use Test::More tests => 21;
 
 use Mailer;
 

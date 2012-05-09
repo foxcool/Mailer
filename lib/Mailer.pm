@@ -57,7 +57,6 @@ sub open_file {
 
 sub get_domain {
     my ( $self, $fh ) = @_;
-    
         
     Carp::croak("File handler required for this action") unless $fh;
     my $email = <$fh>;
