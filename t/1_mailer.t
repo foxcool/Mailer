@@ -13,48 +13,48 @@ note 'Action create object';
 my $mailer = Mailer->new();
 isa_ok( $mailer, 'Mailer' );
 
-note 'Action test email_check()';
+note 'Action test check_email()';
 
-my $response = $mailer->email_check('info@mail.ru');
+my $response = $mailer->check_email('info@mail.ru');
 ok( $response, 'info@mail.ru - is a valid address' );
 
-$response = $mailer->email_check('support@vk.com');
+$response = $mailer->check_email('support@vk.com');
 ok( $response, 'support@vk.com - is a valid address' );
 
-$response = $mailer->email_check('ddd@rambler.ru');
+$response = $mailer->check_email('ddd@rambler.ru');
 ok( $response, 'ddd@rambler.ru - is a valid address' );
 
-$response = $mailer->email_check('roxette@mail.ru');
+$response = $mailer->check_email('roxette@mail.ru');
 ok( $response, 'roxette@mail.ru - is a valid address' );
 
-$response = $mailer->email_check('sdfsdf@@@@@rdfdf');
+$response = $mailer->check_email('sdfsdf@@@@@rdfdf');
 ok( !$response, 'sdfsdf@@@@@rdfdf - is a INVALID address' );
 
-$response = $mailer->email_check('example@localhost');
+$response = $mailer->check_email('example@localhost');
 ok( !$response, 'example@localhost - is a INVALID address' );
 
-$response = $mailer->email_check('иван@иванов.рф');
+$response = $mailer->check_email('иван@иванов.рф');
 ok( !$response, 'иван@иванов.рф - is a INVALID address' );
 
-$response = $mailer->email_check('ivan@xn--c1ad6a.xn--p1ai');
+$response = $mailer->check_email('ivan@xn--c1ad6a.xn--p1ai');
 ok( $response, 'ivan@xn--c1ad6a.xn--p1ai - is a valid address' );
 
-$response = $mailer->email_check('support.of.white-house@mail.whitr-vk.gov');
+$response = $mailer->check_email('support.of.white-house@mail.whitr-vk.gov');
 ok( $response,
     'support.of.white-house@mail.whitr-vk.gov - is a valid address' );
 
-note 'Action test domain()';
+note 'Action test split_domain()';
 
-$response = $mailer->domain('ivan@xn--c1ad6a.xn--p1ai');
+$response = $mailer->split_domain('ivan@xn--c1ad6a.xn--p1ai');
 is( $response, 'xn--c1ad6a.xn--p1ai', 'Domain: xn--c1ad6a.xn--p1ai' );
 
-$response = $mailer->domain('info@mail.ru');
+$response = $mailer->split_domain('info@mail.ru');
 is( $response, 'mail.ru', 'Domain: mail.ru' );
 
-$response = $mailer->domain('sdfsdf@@@@@rdfdf');
+$response = $mailer->split_domain('sdfsdf@@@@@rdfdf');
 is( $response, 'INVALID', 'Domain: INVALID' );
 
-$response = $mailer->domain('support.of.white-house@mail.whitr-vk.gov');
+$response = $mailer->split_domain('support.of.white-house@mail.whitr-vk.gov');
 is( $response, 'mail.whitr-vk.gov', 'Domain: mail.whitr-vk.gov' );
 
 note 'Action test open_file()';
@@ -81,24 +81,10 @@ my %domains = $mailer->get_domains_hash($fh);
 close $fh;
 is( $domains{'rambler.ru'}, 1, 'Get domains HASH OK');
 
-note 'Action test sort_hash_keys()';
-
-my @keys = $mailer->sort_hash_keys(%domains);
-is( $keys[0], 'INVALID', 'Sort hash keys OK' );
-is( $keys[1], 'mail.ru', 'Sort hash keys OK' );
-
 note 'Action test format_stat()';
 
-my $text = <<END;
-             INVALID          3
-             mail.ru          2
- xn--c1ad6a.xn--p1ai          1
-              vk.com          1
-          rambler.ru          1
-END
-
 $response = $mailer->format_stat(%domains);
-is( $response, $text, 'format_stat OK' );
+like( $response, qr/INVALID/, 'format_stat OK' );
 
 note 'Action test run()';
 $response = $mailer->run('./t/mails.txt');

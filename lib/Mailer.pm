@@ -1,27 +1,35 @@
 package Mailer;
 
+# Mailer - module for counting domains.
+
 use 5.010;
 use strict;
 use warnings;
 
 use Email::Valid;
+require Carp;
 
 our $VERSION = '0.01';
 
 sub new {
     my $class = shift;
     my $self  = {@_};
+    
     bless $self, $class;
 }
 
-sub email_check {
+sub check_email {
     my ( $self, $email ) = @_;
+    
+    Carp::croak("Email required for this action") unless $email;
     return Email::Valid->address($email);
 }
 
-sub domain {
+sub split_domain {
     my ( $self, $email ) = @_;
-    if ( $self->email_check($email) ) {
+    
+    Carp::croak("Email required for this action") unless $email;
+    if ( $self->check_email($email) ) {
         $email =~ s/.*@//;
         return $email;
     }
@@ -30,6 +38,8 @@ sub domain {
 
 sub run {
     my ( $self, $filepath ) = @_;
+
+    Carp::croak("Path to file with emails required for this action") unless $filepath;    
     my $fh      = $self->open_file($filepath);
     my %domains = $self->get_domains_hash($fh);
     close $fh;
@@ -39,22 +49,28 @@ sub run {
 
 sub open_file {
     my ( $self, $filepath ) = @_;
-    die('Required file with emails!') unless $filepath;
+    
+    Carp::croak("Path to file with emails required for this action") unless $filepath;
     open my $fh, '<', $filepath or die($!);
     return $fh;
 }
 
 sub get_domain {
     my ( $self, $fh ) = @_;
+    
+        
+    Carp::croak("File handler required for this action") unless $fh;
     my $email = <$fh>;
     if ($email) {
         chomp $email;
-        return $self->domain($email);
+        return $self->split_domain($email);
     }
 }
 
 sub get_domains_hash {
     my ( $self, $fh ) = @_;
+    
+    Carp::croak("File handler required for this action") unless $fh;
     my %domains;
     while ( my $domain = $self->get_domain($fh) ) {
         $domains{$domain}++;
@@ -62,16 +78,13 @@ sub get_domains_hash {
     return %domains;
 }
 
-sub sort_hash_keys {
-    my ( $self, %domains ) = @_;
-    return sort { $domains{$b} <=> $domains{$a} } keys %domains if wantarray;
-}
-
 sub format_stat {
     my ( $self, %domains ) = @_;
-    my @keys = $self->sort_hash_keys(%domains);
+
+    Carp::croak("Domains HASH required for this action") unless %domains;    
+    my @keys = sort { $domains{$b} <=> $domains{$a} } keys %domains;
     my $result;
-    $result .= sprintf( "%20s %10s\n", $_, $domains{$_} ) for @keys;
+    $result .= "$_\t$domains{$_}\n" for @keys;
     return $result;
 }
 
@@ -83,7 +96,7 @@ __END__
 
 =head1 NAME
 
-Mailer - module for checking email.
+Mailer - module for counting domains.
 
 =head1 SYNOPSIS
 
@@ -102,9 +115,9 @@ Just test.
 
 The C<new> constructor lets you create a new B<Mailer> object.
 
-=head2 email_check
+=head2 check_email
 
-    say 'good' if $mailer->email_check('vasya@gmail.com');
+    say 'good' if $mailer->check_email('vasya@gmail.com');
 
 This method check email with Email::Valid.
 
